@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Host_Monitor
@@ -12,27 +13,39 @@ namespace Host_Monitor
         static void Main(string[] args)
         {
             settings = settings.ReadFromFile("Settings.json");
-            MailSendAdapter emailSendAdapter = new MailSendAdapter(
-                SmtpServer: settings.SmtpServer,
-                SmtpPort: settings.SmtpPort,
-                Login: settings.Email, Password: settings.Password);
+            
 
-            List<MessageParams> Messages = new List<MessageParams>();
             MessageParams.MailTo = settings.MailTo;
             MessageParams.ReplyTo = settings.ReplyTo;
             MessageParams.SenderName = settings.SenderName;
             MessageParams.TextFormat = MimeKit.Text.TextFormat.Text;
 
-            Messages = CheckStatus(settings.PathToHostsFile);
-
-            foreach (MessageParams message in Messages)
-            {
-                emailSendAdapter.Send(message); //SendAsync чёт не работает
-            }
+            Thread DoPing = new Thread(new ThreadStart(PingWorker));
+            DoPing.Start();
 
             //Host.WriteHostsToFile(Hosts, "Hosts.json");
             //List<Host> Hosts2 = Host.ReadHostsFromFile("Hosts.json");
             //Console.WriteLine(Hosts2[0].Name + "\n" + Hosts2[0].IP + "\n");             
+        }
+
+        public static void PingWorker()
+        {
+
+            List<MessageParams> Messages = new List<MessageParams>();
+            MailSendAdapter emailSendAdapter = new MailSendAdapter(
+                SmtpServer: settings.SmtpServer,
+                SmtpPort: settings.SmtpPort,
+                Login: settings.Email, Password: settings.Password);
+
+            while (true)
+            {
+                Messages = CheckStatus(settings.PathToHostsFile);
+                foreach (MessageParams message in Messages)
+                {
+                    emailSendAdapter.Send(message); //SendAsync чёт не работает
+                }
+                Thread.Sleep(10000);
+            }
         }
 
         public static List<MessageParams> CheckStatus(string Path)
