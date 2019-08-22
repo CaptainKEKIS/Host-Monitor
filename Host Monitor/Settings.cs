@@ -19,6 +19,7 @@ namespace Host_Monitor
         public int TimeOut { get; set; }
         public int DataSize { get; set; }
         public int Ttl { get; set; }
+        public int PingInterval { get; set; }
 
         public  void WriteToFile(Settings settings, string PathToFile)
         {

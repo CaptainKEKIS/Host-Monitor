@@ -44,7 +44,7 @@ namespace Host_Monitor
                 {
                     emailSendAdapter.Send(message); //SendAsync чёт не работает
                 }
-                Thread.Sleep(10000);
+                Thread.Sleep(settings.PingInterval);
             }
         }
 
@@ -60,47 +60,48 @@ namespace Host_Monitor
                 Ttl = settings.Ttl         //
             };
             int count = Hosts.Count;
-            Task[] Task1 = new Task[count];
+            Task[] Tasks = new Task[count];
             int TaskIndex = -1;
 
             foreach (Host host in Hosts)
             {
                 TaskIndex++;
-                Task1[TaskIndex] = Task.Factory.StartNew(() =>
+                Tasks[TaskIndex] = Task.Factory.StartNew(() =>
                 {
                     string Status = "";
-                    Status = SendPing.GetStatus(host.IP);
-                    if (Status != "Success" && Status != host.Status && host.Condition == true)
+                    if(host.Condition == true)
                     {
-                        Message.Add(new MessageParams
+                        Status = SendPing.GetStatus(host.IP);
+                        if (Status != "Success" && Status != host.Status)
                         {
-                            Body = "Хост: " + host.Name + " с ip: " + host.IP + " офлайн. Причина: " + Status + ".",
-                            Caption = host.Name + " упал."
-                        });
-                        Console.WriteLine("Упал. Хост: " + host.Name + "с ip: " + host.IP + " " + Status);
-                    }
-                    else if (Status == "Success" && Status != host.Status && host.Condition == true && host.Status != null)
-                    {
-                        Message.Add(new MessageParams
+                            Message.Add(new MessageParams
+                            {
+                                Body = "Хост: " + host.Name + " с ip: " + host.IP + " офлайн. Причина: " + Status + ".",
+                                Caption = host.Name + " упал."
+                            });
+                            Console.WriteLine("Упал. Хост: " + host.Name + "с ip: " + host.IP + " " + Status);
+                        }
+                        else if (Status == "Success" && Status != host.Status && host.Status != null)
                         {
-                            Body = "Хост: " + host.Name + " с ip: " + host.IP + " снова онлайн.",
-                            Caption = host.Name + " поднялся."
-                        });
-                        Console.WriteLine("Поднялся. Хост: " + host.Name + "с ip: " + host.IP + " " + Status);
+                            Message.Add(new MessageParams
+                            {
+                                Body = "Хост: " + host.Name + " с ip: " + host.IP + " снова онлайн.",
+                                Caption = host.Name + " поднялся."
+                            });
+                            Console.WriteLine("Поднялся. Хост: " + host.Name + "с ip: " + host.IP + " " + Status);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Хост: " + host.Name + "с ip: " + host.IP + " " + Status);
+                        }
+                        host.Status = Status;
                     }
-                    else
-                    {
-                        Console.WriteLine("Хост: " + host.Name + "с ip: " + host.IP + " " + Status);
-                    }
-                    host.Status = Status;
                 });
             }
-            Task.WaitAll(Task1);
+            Task.WaitAll(Tasks);
 
             Host.WriteHostsToFile(Hosts, Path);
             return Message;
         }
-
-
     }
 }
