@@ -10,27 +10,11 @@ namespace Host_Monitor
 {
     class Pinger
     {
-        private int _ttl;
-        private int _timeOut;
-        private int _dataSize;
+        public int TimeOut { get; set; }
 
-        public int TimeOut
-        {
-            get { return _timeOut; }
-            set { _timeOut = value; }
-        }
+        public int Ttl { get; set; }
 
-        public int Ttl
-        {
-            get { return _ttl; }
-            set { _ttl = value; }
-        }
-
-        public int DataSize
-        {
-            get { return _dataSize; }
-            set { _dataSize = value; }
-        }
+        public int DataSize { get; set; }
 
         public async Task<string> GetStatusAsync(string IpAddresses)
         {
@@ -58,6 +42,19 @@ namespace Host_Monitor
             Reply = Piping.Send(IpAddresses, TimeOut, PingBuffer, POptions);
             Status = Reply.Status.ToString();
             return Status;
+        }
+
+        public PingReply Ping(string IpAddress)
+        {
+            Ping Piping = new Ping();
+            PingReply pingReply;
+            IPAddress Address = IPAddress.Parse(IpAddress);
+            PingOptions POptions = new PingOptions(Ttl, false);
+            byte[] PingBuffer = new byte[DataSize];
+            Random rnd = new Random();
+            rnd.NextBytes(PingBuffer);
+            pingReply = Piping.Send(Address, TimeOut, PingBuffer, POptions);
+            return pingReply;
         }
 
         #region Пока не надо
