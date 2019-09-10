@@ -31,7 +31,7 @@ namespace Host_Monitor
 
         public static void PingWorker()
         {
-            List<Host> hosts = Host.ReadHostsFromFile(settings.PathToHostsFile);
+            List<Host> hosts = JsonConvert.DeserializeObject<List<Host>>(settings.PathToHostsFile);
             List<Host> changedHosts = new List<Host>();
             MailSendAdapter emailSendAdapter = new MailSendAdapter(
                 SmtpServer: settings.SmtpServer,

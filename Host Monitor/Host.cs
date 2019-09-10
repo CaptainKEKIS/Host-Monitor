@@ -13,6 +13,8 @@ namespace Host_Monitor
         public bool Condition { get; set; }
         public string Status { get; set; }
         public bool StatusChanged { get; set; }
+
+        /*
         public static void WriteHostsToFile(List<Host> Hosts, string PathToFile)
         {
             File.WriteAllText(PathToFile, JsonConvert.SerializeObject(Hosts));
@@ -22,5 +24,6 @@ namespace Host_Monitor
             List<Host> Hosts = JsonConvert.DeserializeObject<List<Host>>(File.ReadAllText(PathToFile));
             return Hosts;
         }
+        */
     }
 }
