@@ -8,7 +8,19 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <StackPanel>
-
+            <Menu>
+                <MenuItem Header="File"/>
+                <MenuItem Header="Settings"/>
+            </Menu>
+            <DataGrid AutoGenerateColumns="False" RowDetailsVisibilityMode="VisibleWhenSelected">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="*" x:Name="HostName" Header="Имя хоста"/>
+                    <DataGridTextColumn Width="*" x:Name="IPAddress" Header="IP адрес"/>
+                    <DataGridTextColumn Width="*" x:Name="Status" Header="Статус"/>
+                    <DataGridTextColumn Width="*" x:Name="Latency" Header="Задержка"/>
+                    <DataGridTextColumn Width="*" x:Name="Condition" Header="Состояние"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </StackPanel>
     </Grid>
 </Window>
