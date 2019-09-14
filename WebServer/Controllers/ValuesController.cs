@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Host_Monitor;
 
 namespace WebServer.Controllers
 {
@@ -21,6 +22,7 @@ namespace WebServer.Controllers
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
         {
+            Pinger pinger = new Pinger();
             return "value";
         }
 

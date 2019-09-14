@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Host_Monitor
 {
-    class Pinger
+    public class Pinger
     {
         public int TimeOut { get; set; }
 
