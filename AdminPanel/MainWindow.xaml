@@ -5,22 +5,52 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AdminPanel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="484.951" Width="1034.466">
     <Grid>
-        <StackPanel>
-            <Menu>
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
                 <MenuItem Header="File"/>
                 <MenuItem Header="Settings"/>
             </Menu>
-            <DataGrid AutoGenerateColumns="False" RowDetailsVisibilityMode="VisibleWhenSelected">
+            <DataGrid x:Name="ResultDataGrid" AutoGenerateColumns="False" RowDetailsVisibilityMode="VisibleWhenSelected">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="*" x:Name="HostName" Header="Имя хоста"/>
-                    <DataGridTextColumn Width="*" x:Name="IPAddress" Header="IP адрес"/>
-                    <DataGridTextColumn Width="*" x:Name="Status" Header="Статус"/>
-                    <DataGridTextColumn Width="*" x:Name="Latency" Header="Задержка"/>
-                    <DataGridTextColumn Width="*" x:Name="Condition" Header="Состояние"/>
+                    <DataGridTemplateColumn Width="*" x:Name="HostName" Header="Имя хоста">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=HostName}" Width="Auto" MaxWidth="250" Padding="6,2"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="110" x:Name="IPAddress" Header="IP адрес">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Address}" Width="Auto" Padding="6,2"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="180" x:Name="Status" Header="Статус">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Status}" Width="Auto" Padding="6,2" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="80" x:Name="Latency" Header="Задержка">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Delay}" Width="Auto" Padding="6,2" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="80" x:Name="Condition" Header="Состояние">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=Condition}" Width="Auto" Padding="6,2" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-        </StackPanel>
+        </DockPanel>
     </Grid>
 </Window>

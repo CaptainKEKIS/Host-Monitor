@@ -23,6 +23,9 @@ namespace AdminPanel
         public MainWindow()
         {
             InitializeComponent();
+            //List<Host> hosts = забрать с веб сервера;
+            //ResultDataGrid.ItemsSource = hosts;
+            
         }
     }
 }
