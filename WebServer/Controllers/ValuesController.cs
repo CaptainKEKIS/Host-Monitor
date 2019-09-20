@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Host_Monitor;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace WebServer.Controllers
 {
@@ -12,20 +14,32 @@ namespace WebServer.Controllers
     public class ValuesController : ControllerBase
     {
         // GET api/values
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        //[HttpGet]
+        //public ActionResult<IEnumerable<string>> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        // GET api/values/GetSettings
+        [HttpGet("{GetSettings}")]
+        public ActionResult<Settings> Get()
         {
-            Pinger pinger = new Pinger();
-            return "value";
+            string settingsPath = Path.Combine(Directory.GetCurrentDirectory(), "Settings.json");
+            string text;
+            try
+            {
+                using (StreamReader sr = new StreamReader(settingsPath))
+                {
+                    text = sr.ReadToEnd();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            Settings settings = JsonConvert.DeserializeObject<Settings>(text);
+            return settings;
         }
-
         // POST api/values
         [HttpPost]
         public void Post([FromBody] string value)

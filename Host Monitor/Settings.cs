@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Host_Monitor
 {
-    class Settings
+    public class Settings
     {
         public string PathToHostsFile { get; set; }
         public string Email { get; set; }

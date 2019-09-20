@@ -1,6 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -14,9 +17,24 @@ namespace Host_Monitor
 
         static void Main(string[] args)
         {
-            settings = settings.ReadFromFile("Settings.json");
-
-
+            string address = "http://localhost:55387/api/values/GetSettings";
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    HttpResponseMessage Response = client.GetAsync(address).Result;
+                    if (Response.StatusCode == HttpStatusCode.OK)
+                    {
+                        HttpContent responseContent = Response.Content;
+                        var json = responseContent.ReadAsStringAsync().Result;
+                        settings = JsonConvert.DeserializeObject<Settings>(json);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
             MessageParams.MailTo = settings.MailTo;
             MessageParams.ReplyTo = settings.ReplyTo;
             MessageParams.SenderName = settings.SenderName;
@@ -32,7 +50,7 @@ namespace Host_Monitor
 
         public static void PingWorker()
         {
-            List<Host> hosts = JsonConvert.DeserializeObject<List<Host>>(settings.PathToHostsFile);
+            List<Host> hosts = JsonConvert.DeserializeObject<List<Host>>(File.ReadAllText(settings.PathToHostsFile));
             List<Host> changedHosts = new List<Host>();
             MailSendAdapter emailSendAdapter = new MailSendAdapter(
                 SmtpServer: settings.SmtpServer,
