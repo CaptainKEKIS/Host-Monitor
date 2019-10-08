@@ -11,12 +11,13 @@ using System.Threading.Tasks;
 
 namespace Host_Monitor
 {
-    class Program
+    class Prog
     {
-        static Settings settings = new Settings();
+        public static Settings settings = new Settings();
 
-        static void Main(string[] args)
+        static void Mai()
         {
+            /*
             string address = "http://localhost:49706/api/values/GetSettings";
             try
             {
@@ -35,6 +36,23 @@ namespace Host_Monitor
             {
                 throw;
             }
+            */
+            string settingsPath = Path.Combine(Directory.GetCurrentDirectory(), "Settings.json");
+            string text;
+            try
+            {
+                using (StreamReader sr = new StreamReader(settingsPath))
+                {
+                    text = sr.ReadToEnd();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            Settings settings = JsonConvert.DeserializeObject<Settings>(text);
+
+
             MessageParams.MailTo = settings.MailTo;
             MessageParams.ReplyTo = settings.ReplyTo;
             MessageParams.SenderName = settings.SenderName;

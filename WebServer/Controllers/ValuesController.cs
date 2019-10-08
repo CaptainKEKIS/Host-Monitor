@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Host_Monitor;
 using Newtonsoft.Json;
 using System.IO;
+using System.Net.NetworkInformation;
 
 namespace WebServer.Controllers
 {
@@ -21,14 +22,14 @@ namespace WebServer.Controllers
         //}
 
         // GET api/values/GetSettings
-        [HttpGet("{GetSettings}")]
-        public ActionResult<Settings> Get()
+        [HttpGet("{PingHost}")]
+        public ActionResult<List<PingReply>> Get(string login, string pass)
         {
-            string settingsPath = Path.Combine(Directory.GetCurrentDirectory(), "Settings.json");
+            string hostsPath = Prog.settings.PathToHostsFile;
             string text;
             try
             {
-                using (StreamReader sr = new StreamReader(settingsPath))
+                using (StreamReader sr = new StreamReader(hostsPath))
                 {
                     text = sr.ReadToEnd();
                 }
@@ -37,8 +38,30 @@ namespace WebServer.Controllers
             {
                 throw;
             }
-            Settings settings = JsonConvert.DeserializeObject<Settings>(text);
-            return settings;
+            List<Host> hosts = JsonConvert.DeserializeObject<List<Host>>(text);//сделать шоб была глобальной
+            List<PingReply> pingReply = new List<PingReply>();
+
+            Pinger SendPing = new Pinger
+            {
+                DataSize = Prog.settings.DataSize,    
+                TimeOut = Prog.settings.TimeOut,   
+                Ttl = Prog.settings.Ttl        
+            };
+
+            int count = hosts.Count;
+            Task[] tasks = new Task[count];
+            int taskIndex = -1;
+
+            foreach (Host host in hosts)
+            {
+                taskIndex++;
+                tasks[taskIndex] = Task.Factory.StartNew(() =>  
+                {
+                        pingReply.Add(SendPing.Ping(host.IP));
+                });
+            }
+            Task.WaitAll(tasks);
+            return pingReply;
         }
         // POST api/values
         [HttpPost]

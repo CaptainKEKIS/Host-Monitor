@@ -1,6 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,9 +27,28 @@ namespace AdminPanel
         public MainWindow()
         {
             InitializeComponent();
-            //List<Host> hosts = забрать с веб сервера;
-            //ResultDataGrid.ItemsSource = hosts;
-            
+            List<PingReply> pingReplies = new List<PingReply>();
+            ResultDataGrid.ItemsSource = pingReplies;
+
+            string address = "http://localhost:49706/api/values/PingHost?login=1&pass=1";
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    HttpResponseMessage Response = client.GetAsync(address).Result;
+                    if (Response.StatusCode == HttpStatusCode.OK)
+                    {
+                        HttpContent responseContent = Response.Content;
+                        var json = responseContent.ReadAsStringAsync().Result;
+                        pingReplies = JsonConvert.DeserializeObject<List<PingReply>>(json);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
         }
     }
 }

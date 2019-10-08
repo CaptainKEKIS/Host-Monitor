@@ -23,5 +23,15 @@ namespace AdminPanel
         {
             InitializeComponent();
         }
+
+        private void buttonSave_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void buttonClose_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
