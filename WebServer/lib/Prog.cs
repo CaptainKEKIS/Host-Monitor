@@ -50,7 +50,7 @@ namespace Host_Monitor
             {
                 throw;
             }
-            Settings settings = JsonConvert.DeserializeObject<Settings>(text);
+            settings = JsonConvert.DeserializeObject<Settings>(text);
 
 
             MessageParams.MailTo = settings.MailTo;

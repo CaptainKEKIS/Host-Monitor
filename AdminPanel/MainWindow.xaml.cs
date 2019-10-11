@@ -30,7 +30,7 @@ namespace AdminPanel
             List<PingReply> pingReplies = new List<PingReply>();
             ResultDataGrid.ItemsSource = pingReplies;
 
-            string address = "http://localhost:49706/api/values/PingHost?login=1&pass=1";
+            string address = "http://localhost:5000/api/values/PingHost?login=1&pass=1";
             try
             {
                 using (var client = new HttpClient())
@@ -40,7 +40,7 @@ namespace AdminPanel
                     {
                         HttpContent responseContent = Response.Content;
                         var json = responseContent.ReadAsStringAsync().Result;
-                        pingReplies = JsonConvert.DeserializeObject<List<PingReply>>(json);
+                        pingReplies = JsonConvert.DeserializeObject<List<PingReply>>(json);/////////IPAddress не сериализуется
                     }
                 }
             }

@@ -12,8 +12,7 @@ namespace AdminPanel
 {
     class Host : INotifyPropertyChanged
     {
-        PingReply Reply;
-        private IPAddress _address;
+        private string _address;
         private string _hostName;
         private string _status;
         private string _delay;
@@ -22,7 +21,8 @@ namespace AdminPanel
         {
             _delay = "";
         }
-        public IPAddress Address
+
+        public string Address
         {
             get
             {
@@ -73,6 +73,7 @@ namespace AdminPanel
                 OnPropertyChanged("Status");
             }
         }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]string prop = "")
         {

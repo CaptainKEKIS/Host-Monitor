@@ -23,13 +23,13 @@ namespace WebServer.Controllers
 
         // GET api/values/GetSettings
         [HttpGet("{PingHost}")]
-        public ActionResult<List<PingReply>> Get(string login, string pass)
+        public ActionResult<string> Get(string login, string pass)
         {
-            string hostsPath = Prog.settings.PathToHostsFile;
+            string settingsPath = Path.Combine(Directory.GetCurrentDirectory(), "Settings.json");
             string text;
             try
             {
-                using (StreamReader sr = new StreamReader(hostsPath))
+                using (StreamReader sr = new StreamReader(settingsPath))
                 {
                     text = sr.ReadToEnd();
                 }
@@ -38,14 +38,16 @@ namespace WebServer.Controllers
             {
                 throw;
             }
-            List<Host> hosts = JsonConvert.DeserializeObject<List<Host>>(text);//сделать шоб была глобальной
+            Settings settings = JsonConvert.DeserializeObject<Settings>(text);
+            string hostsPath = settings.PathToHostsFile;
+            List<Host> hosts = Host.ReadHostsFromFile(hostsPath);//сделать шоб была глобальной
             List<PingReply> pingReply = new List<PingReply>();
-
+            
             Pinger SendPing = new Pinger
             {
-                DataSize = Prog.settings.DataSize,    
-                TimeOut = Prog.settings.TimeOut,   
-                Ttl = Prog.settings.Ttl        
+                DataSize = settings.DataSize,    
+                TimeOut = settings.TimeOut,   
+                Ttl = settings.Ttl        
             };
 
             int count = hosts.Count;
@@ -61,7 +63,8 @@ namespace WebServer.Controllers
                 });
             }
             Task.WaitAll(tasks);
-            return pingReply;
+            string Replies = JsonConvert.SerializeObject(pingReply); /////Чота надо сделать ... либо класс либо........
+            return Replies;
         }
         // POST api/values
         [HttpPost]
