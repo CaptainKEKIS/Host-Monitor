@@ -25,6 +25,9 @@ namespace WebServer.Controllers
         [HttpGet("{PingHost}")]
         public ActionResult<string> Get(string login, string pass)
         {
+            JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
+            serializerSettings.Converters.Add(new IPAddressConverter());
+            serializerSettings.Formatting = Formatting.Indented;
             string settingsPath = Path.Combine(Directory.GetCurrentDirectory(), "Settings.json");
             string text;
             try
@@ -42,12 +45,12 @@ namespace WebServer.Controllers
             string hostsPath = settings.PathToHostsFile;
             List<Host> hosts = Host.ReadHostsFromFile(hostsPath);//сделать шоб была глобальной
             List<PingReply> pingReply = new List<PingReply>();
-            
+
             Pinger SendPing = new Pinger
             {
-                DataSize = settings.DataSize,    
-                TimeOut = settings.TimeOut,   
-                Ttl = settings.Ttl        
+                DataSize = settings.DataSize,
+                TimeOut = settings.TimeOut,
+                Ttl = settings.Ttl
             };
 
             int count = hosts.Count;
@@ -57,13 +60,13 @@ namespace WebServer.Controllers
             foreach (Host host in hosts)
             {
                 taskIndex++;
-                tasks[taskIndex] = Task.Factory.StartNew(() =>  
+                tasks[taskIndex] = Task.Factory.StartNew(() =>
                 {
-                        pingReply.Add(SendPing.Ping(host.IP));
+                    pingReply.Add(SendPing.Ping(host.IP));
                 });
             }
             Task.WaitAll(tasks);
-            string Replies = JsonConvert.SerializeObject(pingReply); /////Чота надо сделать ... либо класс либо........
+            string Replies = JsonConvert.SerializeObject(pingReply, serializerSettings);
             return Replies;
         }
         // POST api/values

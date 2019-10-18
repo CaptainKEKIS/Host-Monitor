@@ -9,9 +9,17 @@
     <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
-                <MenuItem Header="File"/>
+                <MenuItem Header="File">
+                </MenuItem>
                 <MenuItem Header="Settings"/>
             </Menu>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
+                <TextBlock Text="Host Name"/>
+                <TextBox Width="300"/>
+                <TextBlock Text="Address"/>
+                <TextBox Width="200" />
+                <Button Content="Add"/>
+            </StackPanel>
             <DataGrid x:Name="ResultDataGrid" AutoGenerateColumns="False" RowDetailsVisibilityMode="VisibleWhenSelected">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Width="*" x:Name="HostName" Header="Имя хоста">
