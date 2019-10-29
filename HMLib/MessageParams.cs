@@ -1,6 +1,6 @@
 ﻿using MimeKit.Text;
 
-namespace Host_Monitor
+namespace HMLib
 {
     public class MessageParams
     {

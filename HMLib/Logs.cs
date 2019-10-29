@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Host_Monitor
+namespace HMLib
 {
-    class Logs
+    public class Logs
     {
         public DateTime TimeStamp { get; set; }
         public string IP { get; set; }

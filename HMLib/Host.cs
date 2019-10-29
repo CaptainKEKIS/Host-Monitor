@@ -1,12 +1,10 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
-namespace Host_Monitor
+namespace HMLib
 {
-    class Host
+    public class Host
     {                                           //оставить Name, IP, Condition. Status убрать в результаты пинга
         public string Name { get; set; }
         public string IP { get; set; }
