@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Net.NetworkInformation;
 using HMLib;
+using Microsoft.Extensions.Configuration;
 
 namespace WebServer.Controllers
 {
@@ -23,25 +24,10 @@ namespace WebServer.Controllers
 
         // GET api/values/GetSettings
         [HttpGet("{PingHost}")]
-        public ActionResult<string> Get(string login, string pass)
+        public ActionResult<string> Get(string login, string pass, IConfiguration config)
         {
-            JsonSerializerSettings serializerSettings = new JsonSerializerSettings();
-            serializerSettings.Converters.Add(new IPAddressConverter());
-            serializerSettings.Formatting = Formatting.Indented;
-            string settingsPath = Path.Combine(Directory.GetCurrentDirectory(), "Settings.json");
-            string text;
-            try
-            {
-                using (StreamReader sr = new StreamReader(settingsPath))
-                {
-                    text = sr.ReadToEnd();
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            Settings settings = JsonConvert.DeserializeObject<Settings>(text);
+
+            Settings settings = config.GetSection("UserSettings").Value;
             string hostsPath = settings.PathToHostsFile;
             List<Host> hosts = Host.ReadHostsFromFile(hostsPath);//сделать шоб была глобальной
             List<PingReply> pingReply = new List<PingReply>();
