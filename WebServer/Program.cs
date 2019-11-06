@@ -10,11 +10,9 @@ namespace WebServer
 {
     public class Program
     {
-        public static void Main(string[] args, IConfiguration config)
+        public static void Main(string[] args)
         {
-            
             CreateWebHostBuilder(args).Build().Run();
-
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>

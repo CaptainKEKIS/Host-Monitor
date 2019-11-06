@@ -29,9 +29,6 @@ namespace AdminPanel
             InitializeComponent();
             List<PingReply> pingReplies = new List<PingReply>();
             ResultDataGrid.ItemsSource = pingReplies;
-            JsonSerializerSettings deserializerSettings = new JsonSerializerSettings();
-            deserializerSettings.Converters.Add(new IPAddressConverter());
-            deserializerSettings.Formatting = Formatting.Indented;
 
             string address = "http://localhost:5000/api/values/PingHost?login=1&pass=1";
             try
@@ -43,7 +40,7 @@ namespace AdminPanel
                     {
                         HttpContent responseContent = Response.Content;
                         var json = responseContent.ReadAsStringAsync().Result;
-                        pingReplies = JsonConvert.DeserializeObject<List<PingReply>>(json, deserializerSettings);/////////IPAddress не сериализуется
+                        pingReplies = JsonConvert.DeserializeObject<List<PingReply>>(json);/////////IPAddress не сериализуется
                     }
                 }
             }

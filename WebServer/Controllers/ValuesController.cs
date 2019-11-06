@@ -27,7 +27,7 @@ namespace WebServer.Controllers
         public ActionResult<string> Get(string login, string pass, IConfiguration config)
         {
 
-            Settings settings = config.GetSection("UserSettings").Value;
+            Settings settings = JsonConvert.DeserializeObject<Settings>(config.GetSection("UserSettings").Value);
             string hostsPath = settings.PathToHostsFile;
             List<Host> hosts = Host.ReadHostsFromFile(hostsPath);//сделать шоб была глобальной
             List<PingReply> pingReply = new List<PingReply>();
@@ -52,7 +52,7 @@ namespace WebServer.Controllers
                 });
             }
             Task.WaitAll(tasks);
-            string Replies = JsonConvert.SerializeObject(pingReply, serializerSettings);
+            string Replies = JsonConvert.SerializeObject(pingReply);
             return Replies;
         }
         // POST api/values
