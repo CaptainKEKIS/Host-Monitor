@@ -10,7 +10,7 @@ namespace HMLib
     {
         public string PathToHostsFile { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; } //TODO: зашифровать
+        public string Password { get; set; } //TODO: зашифровать)
         public string SenderName { get; set; }
         public string SmtpServer { get; set; }
         public int SmtpPort { get; set; }
@@ -20,15 +20,5 @@ namespace HMLib
         public int DataSize { get; set; }
         public int Ttl { get; set; }
         public int PingInterval { get; set; }
-
-        public  void WriteToFile(Settings settings, string PathToFile)
-        {
-            File.WriteAllText(PathToFile, JsonConvert.SerializeObject(settings));
-        }
-        public  Settings ReadFromFile(string PathToFile)
-        {
-            Settings settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(PathToFile));
-            return settings;
-        }
     }
 }

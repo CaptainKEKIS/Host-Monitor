@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebServer.Models
 {
-    public class Host
+    public partial class Host
     {                       
         public int Id { get; set; }
         [Required]
