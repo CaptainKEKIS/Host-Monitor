@@ -22,11 +22,22 @@ namespace WebServer.Controllers
         //    return new string[] { "value1", "value2" };
         //}
 
-        // GET api/values/GetSettings
-        [HttpGet("{PingHost}")]
-        public ActionResult<string> Get(string login, string pass, IConfiguration config)
-        {
+        private readonly Models.MonitorContext _context;
 
+        public ValuesController(Models.MonitorContext context)
+        {
+            _context = context;
+        }
+
+        // GET /api/values/PingHost?login=1&pass=1
+        [HttpGet("{PingHost}")]
+        public ActionResult<string> Get(string login, string pass/*, IConfiguration config*/)
+        {
+            string result = _context.Hosts
+                .Where(x => x.Id == 1)
+                .FirstOrDefault().ToString();
+            return result;
+            /*
             Settings settings = JsonConvert.DeserializeObject<Settings>(config.GetSection("UserSettings").Value);
             string hostsPath = settings.PathToHostsFile;
             List<Host> hosts = Host.ReadHostsFromFile(hostsPath);//сделать шоб была глобальной
@@ -54,6 +65,7 @@ namespace WebServer.Controllers
             Task.WaitAll(tasks);
             string Replies = JsonConvert.SerializeObject(pingReply);
             return Replies;
+            */
         }
         // POST api/values
         [HttpPost]
