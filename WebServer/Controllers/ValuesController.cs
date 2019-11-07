@@ -31,11 +31,11 @@ namespace WebServer.Controllers
 
         // GET /api/values/PingHost?login=1&pass=1
         [HttpGet("{PingHost}")]
-        public ActionResult<string> Get(string login, string pass/*, IConfiguration config*/)
+        public ActionResult<object> Get(string login, string pass/*, IConfiguration config*/)
         {
-            string result = _context.Hosts
+            var result = _context.Hosts
                 .Where(x => x.Id == 1)
-                .FirstOrDefault().ToString();
+                .FirstOrDefault();
             return result;
             /*
             Settings settings = JsonConvert.DeserializeObject<Settings>(config.GetSection("UserSettings").Value);

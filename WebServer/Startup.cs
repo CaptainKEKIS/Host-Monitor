@@ -28,7 +28,7 @@ namespace WebServer
             string connection = Configuration.GetConnectionString("DefaultConnection");
             // добавляем контекст MobileContext в качестве сервиса в приложение
             services.AddDbContext<MonitorContext>(options =>
-                options.UseSqlServer(connection));
+                options.UseSqlite(connection));
             services.AddMvc();
         }
 
