@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using HMLib;
+using Microsoft.Extensions.Configuration;
 using System.IO;
 
 namespace WebServer
@@ -6,15 +7,23 @@ namespace WebServer
     public class AppSettings
     {
         private static AppSettings _appSettings;
+        private readonly IConfiguration config;
 
         public string AppConnection { get; set; }
 
         public AppSettings(IConfiguration config)
         {
-            this.AppConnection = config.GetValue<string>("AppConnection");
+            this.AppConnection = config.GetValue<string>("DefaultConnection");
 
             // Now set Current
             _appSettings = this;
+            this.config = config;
+        }
+
+        public object GetProperty(string propName)
+        {
+            var r = config.GetValue<Settings>(propName);
+            return r;
         }
 
         public static AppSettings Current
@@ -39,7 +48,7 @@ namespace WebServer
 
             IConfigurationRoot configuration = builder.Build();
 
-            var settings = new AppSettings(configuration.GetSection("AppSettings"));
+            var settings = new AppSettings(configuration);
 
             return settings;
         }

@@ -1,6 +1,6 @@
 ﻿using MimeKit.Text;
 
-namespace HMLib
+namespace WebServer
 {
     public class MessageParams
     {

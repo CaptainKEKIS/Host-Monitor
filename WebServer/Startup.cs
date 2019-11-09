@@ -30,6 +30,15 @@ namespace WebServer
             services.AddDbContext<MonitorContext>(options =>
                 options.UseSqlite(connection));
             services.AddMvc();
+
+
+            var o = new DbContextOptionsBuilder<MonitorContext>();
+            var c = o.UseSqlite(connection).Options;
+            MonitorContext mc = new MonitorContext(c);
+            var serviceCollection = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+
+            HostMonitor hostMonitor = new HostMonitor();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

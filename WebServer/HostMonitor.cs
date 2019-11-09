@@ -1,5 +1,5 @@
-﻿using HMLib;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
@@ -17,11 +17,16 @@ namespace WebServer
     public class HostMonitor
     {
         private readonly MonitorContext _context;
-        public Settings Settings = new Settings();
-
-        public HostMonitor(MonitorContext context)
+        public HMLib.Settings Settings = null;
+        
+        public HostMonitor()
         {
-            _context = context;
+            string connection = AppSettings.Current.AppConnection;
+            AppSettings.Current.GetProperty("UserSettings");
+            var o = new DbContextOptionsBuilder<MonitorContext>();
+            var c = o.UseSqlite(connection).Options;
+            MonitorContext mc = new MonitorContext(c);
+            _context = mc;
             MessageParams.MailTo = Settings.MailTo;
             MessageParams.ReplyTo = Settings.ReplyTo;
             MessageParams.SenderName = Settings.SenderName;
@@ -34,7 +39,7 @@ namespace WebServer
 
         public void PingWorker()
         {
-            List<Host> hosts = JsonConvert.DeserializeObject<List<Host>>(File.ReadAllText(settings.PathToHostsFile));
+            List<Host> hosts = _context.Hosts.ToList();
             List<Host> changedHosts = new List<Host>();
             MailSendAdapter emailSendAdapter = new MailSendAdapter(
                 SmtpServer: Settings.SmtpServer,
@@ -58,8 +63,8 @@ namespace WebServer
                 {
                     MessageParams message = new MessageParams
                     {
-                        Body = "Хост: " + host.Name + "с ip: " + host.IP + " изменил статус на " + host.Status,
-                        Caption = host.Name + " статус " + host.Status
+                        //Body = "Хост: " + host.Name + "с ip: " + host.IpAddress + " изменил статус на " + host.Status,
+                        //Caption = host.Name + " статус " + host.Status
                     };
                     emailSendAdapter.Send(message); //SendAsync чёт не работает
                 }
@@ -86,7 +91,7 @@ namespace WebServer
         {
             PingReply pingReply;
 
-            Pinger SendPing = new Pinger
+            HMLib.Pinger SendPing = new HMLib.Pinger
             {
                 DataSize = Settings.DataSize,      //
                 TimeOut = Settings.TimeOut,    //TODO:Перенести в класс, сделать файл с настройками
@@ -103,13 +108,13 @@ namespace WebServer
                 {                                               //оставить только пинг и возвращать лист пингрезултов
                     if (host.Condition == true)
                     {
-                        pingReply = SendPing.Ping(host.IP);
-                        if (pingReply.Status.ToString() != host.Status && !String.IsNullOrEmpty(host.Status))
-                        {
-                            host.StatusChanged = true;
-                            Console.WriteLine("Хост: " + host.Name + "с ip: " + host.IP + " изменил статус с " + host.Status + " на " + pingReply.Status.ToString());
-                        }
-                        host.Status = pingReply.Status.ToString();
+                        //pingReply = SendPing.Ping(host.IP);
+                        //if (pingReply.Status.ToString() != host.Status && !String.IsNullOrEmpty(host.Status))
+                        //{
+                        //    host.StatusChanged = true;
+                        //    Console.WriteLine("Хост: " + host.Name + "с ip: " + host.IP + " изменил статус с " + host.Status + " на " + pingReply.Status.ToString());
+                        //}
+                        //host.Status = pingReply.Status.ToString();
                     }
                 });
             }

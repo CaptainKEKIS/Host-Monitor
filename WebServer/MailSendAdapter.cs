@@ -4,7 +4,7 @@ using MailKit.Net.Smtp;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace HMLib
+namespace WebServer
 {
     public class MailSendAdapter
     {
