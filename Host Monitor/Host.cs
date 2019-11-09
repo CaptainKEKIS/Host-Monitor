@@ -1,8 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Host_Monitor
 {
@@ -12,6 +8,8 @@ namespace Host_Monitor
         public string IP { get; set; }
         public bool Condition { get; set; }
         public string Status { get; set; }
+
+        [NotMapped]
         public bool StatusChanged { get; set; }
 
         /*

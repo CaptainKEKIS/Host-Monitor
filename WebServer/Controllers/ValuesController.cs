@@ -26,6 +26,7 @@ namespace WebServer.Controllers
 
         public ValuesController(Models.MonitorContext context)
         {
+            
             _context = context;
         }
 

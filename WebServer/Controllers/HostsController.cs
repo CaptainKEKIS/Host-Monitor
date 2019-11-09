@@ -17,6 +17,7 @@ namespace WebServer.Controllers
 
         public HostsController(MonitorContext context)
         {
+            
             _context = context;
         }
 
