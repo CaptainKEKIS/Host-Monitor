@@ -17,12 +17,23 @@ namespace WebServer
             return _appConfig.config.GetConnectionString("DefaultConnection");
         }
 
+        public static int GetProperty(string propName)
+        {
+            _appConfig = GetConfig();
+            return _appConfig.config.GetValue<int>(propName);
+        }
+
+        public static Settings GetSettings()
+        {
+            _appConfig = GetConfig();
+            var settings = new Settings();
+            _appConfig.config.GetSection("UserSettings").Bind(settings);
+            return settings;
+        }
+
         public ConfigHelper(IConfiguration config)
         {
             this.config = config;
-            var a = config.GetConnectionString("DefaultConnection");
-            var b = config.GetSection("UserSettings");
-            var c = config.GetValue<Settings>("UserSettings");
         }
 
         public static ConfigHelper GetConfig()

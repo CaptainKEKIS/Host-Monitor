@@ -35,7 +35,7 @@ namespace WebServer
             var o = new DbContextOptionsBuilder<MonitorContext>();
             var c = o.UseSqlite(connection).Options;
             MonitorContext mc = new MonitorContext(c);
-            var serviceCollection = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+            var serviceCollection = new ServiceCollection();
 
             HostMonitor hostMonitor = new HostMonitor();
 

@@ -22,11 +22,13 @@ namespace WebServer
         
         public HostMonitor()
         {
-            string connection = ConfigHelper.GetDefaultConnection();
+            settings = ConfigHelper.GetSettings();       //получаю настройки из конфигурации
+            string connection = ConfigHelper.GetDefaultConnection();        //получаю строку подключения из конфигурации
             var dbContextOptions = new DbContextOptionsBuilder<MonitorContext>()
                 .UseSqlite(connection).Options;
             _context = new MonitorContext(dbContextOptions);
-            var hosts = _context.Hosts.ToList();
+
+            var intt = ConfigHelper.GetProperty("UserSettings:Ttl");
             MessageParams.MailTo = settings.MailTo;
             MessageParams.ReplyTo = settings.ReplyTo;
             MessageParams.SenderName = settings.SenderName;
