@@ -17,19 +17,19 @@ namespace WebServer
     public class HostMonitor
     {
         private readonly MonitorContext _context;
-        public HMLib.Settings Settings = null;
+        IConfiguration configuration;
+        public HMLib.Settings settings = null;
         
         public HostMonitor()
         {
-            string connection = AppSettings.Current.AppConnection;
-            AppSettings.Current.GetProperty("UserSettings");
-            var o = new DbContextOptionsBuilder<MonitorContext>();
-            var c = o.UseSqlite(connection).Options;
-            MonitorContext mc = new MonitorContext(c);
-            _context = mc;
-            MessageParams.MailTo = Settings.MailTo;
-            MessageParams.ReplyTo = Settings.ReplyTo;
-            MessageParams.SenderName = Settings.SenderName;
+            string connection = ConfigHelper.GetDefaultConnection();
+            var dbContextOptions = new DbContextOptionsBuilder<MonitorContext>()
+                .UseSqlite(connection).Options;
+            _context = new MonitorContext(dbContextOptions);
+            var hosts = _context.Hosts.ToList();
+            MessageParams.MailTo = settings.MailTo;
+            MessageParams.ReplyTo = settings.ReplyTo;
+            MessageParams.SenderName = settings.SenderName;
             MessageParams.TextFormat = MimeKit.Text.TextFormat.Text;
 
             Thread DoPing = new Thread(new ThreadStart(PingWorker));
@@ -42,9 +42,9 @@ namespace WebServer
             List<Host> hosts = _context.Hosts.ToList();
             List<Host> changedHosts = new List<Host>();
             MailSendAdapter emailSendAdapter = new MailSendAdapter(
-                SmtpServer: Settings.SmtpServer,
-                SmtpPort: Settings.SmtpPort,
-                Login: Settings.Email, Password: Settings.Password);
+                SmtpServer: settings.SmtpServer,
+                SmtpPort: settings.SmtpPort,
+                Login: settings.Email, Password: settings.Password);
 
             while (true)
             {
@@ -68,7 +68,7 @@ namespace WebServer
                     };
                     emailSendAdapter.Send(message); //SendAsync чёт не работает
                 }
-                Thread.Sleep(Settings.PingInterval);
+                Thread.Sleep(settings.PingInterval);
             }
         }
 
@@ -93,9 +93,9 @@ namespace WebServer
 
             HMLib.Pinger SendPing = new HMLib.Pinger
             {
-                DataSize = Settings.DataSize,      //
-                TimeOut = Settings.TimeOut,    //TODO:Перенести в класс, сделать файл с настройками
-                Ttl = Settings.Ttl         //
+                DataSize = settings.DataSize,      //
+                TimeOut = settings.TimeOut,    //
+                Ttl = settings.Ttl         //
             };
             int count = hosts.Count;
             Task[] tasks = new Task[count];
@@ -104,8 +104,8 @@ namespace WebServer
             foreach (Host host in hosts)
             {
                 taskIndex++;
-                tasks[taskIndex] = Task.Factory.StartNew(() =>  //перенести проверку статуса куда-нибудь.
-                {                                               //оставить только пинг и возвращать лист пингрезултов
+                tasks[taskIndex] = Task.Factory.StartNew(() =>  
+                {                                               
                     if (host.Condition == true)
                     {
                         //pingReply = SendPing.Ping(host.IP);
