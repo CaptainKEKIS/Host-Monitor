@@ -17,9 +17,10 @@ namespace WebServer
     public class HostMonitor
     {
         private readonly MonitorContext _context;
-        IConfiguration configuration;
+        //IConfiguration configuration;
         public HMLib.Settings settings = null;
-        
+        public HMLib.Pinger pinger;
+
         public HostMonitor()
         {
             settings = ConfigHelper.GetSettings();       //получаю настройки из конфигурации
@@ -28,7 +29,14 @@ namespace WebServer
                 .UseSqlite(connection).Options;
             _context = new MonitorContext(dbContextOptions);
 
-            var intt = ConfigHelper.GetProperty("UserSettings:Ttl");
+            pinger = new HMLib.Pinger
+            {
+                DataSize = settings.DataSize,
+                TimeOut = settings.TimeOut,
+                Ttl = settings.Ttl
+            };
+
+            //var intt = ConfigHelper.GetProperty("UserSettings:Ttl");
             MessageParams.MailTo = settings.MailTo;
             MessageParams.ReplyTo = settings.ReplyTo;
             MessageParams.SenderName = settings.SenderName;
@@ -43,6 +51,7 @@ namespace WebServer
         {
             List<Host> hosts = _context.Hosts.ToList();
             List<Host> changedHosts = new List<Host>();
+            
             MailSendAdapter emailSendAdapter = new MailSendAdapter(
                 SmtpServer: settings.SmtpServer,
                 SmtpPort: settings.SmtpPort,
@@ -50,9 +59,20 @@ namespace WebServer
 
             while (true)
             {
-                hosts = CheckStatus(hosts);
+                PingReply pingReply;
+                Log log = new Log();
+                foreach (Host host in hosts)
+                {
+                    pingReply = pinger.Ping(host.IpAddress);
+                    log.Status = pingReply.Status.ToString();
+                    log.Delay = (int)pingReply.RoundtripTime;
+                    log.TimeStamp = DateTime.Now;
+                    log.HostId = host.Id;
+                    log.Host = host;
+                    _context.Logs.Add(log);
+                }
 
-                changedHosts = hosts.FindAll(ChangedStatus);
+                //changedHosts = hosts.FindAll(ChangedStatus);
 
                 /*delegate (Host host)
                 {
@@ -74,31 +94,26 @@ namespace WebServer
             }
         }
 
-        private bool ChangedStatus(Host host)
-        {
+        //private bool ChangedStatus(Host host)
+        //{
 
-            if (host.StatusChanged == true)
-            {
-                host.StatusChanged = false;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+        //    if (host.StatusChanged == true)
+        //    {
+        //        host.StatusChanged = false;
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
 
-        }
+        //}
 
         public List<Host> CheckStatus(List<Host> hosts)
         {
             PingReply pingReply;
 
-            HMLib.Pinger SendPing = new HMLib.Pinger
-            {
-                DataSize = settings.DataSize,      //
-                TimeOut = settings.TimeOut,    //
-                Ttl = settings.Ttl         //
-            };
+            
             int count = hosts.Count;
             Task[] tasks = new Task[count];
             int taskIndex = -1;

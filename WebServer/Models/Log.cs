@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebServer.Models
 {
-    public class Logs
+    public class Log
     {
         public int Id { get; set; }
         [Required]

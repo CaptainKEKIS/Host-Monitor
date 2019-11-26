@@ -5,7 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace WebServer.Models
 {
     public partial class Host
-    {                       
+    {    
+        
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
@@ -15,6 +16,6 @@ namespace WebServer.Models
         [NotMapped]
         public bool StatusChanged { get; set; }
 
-        public List<Logs> Logs { get; set; }
+        public List<Log> Logs { get; set; }
     }
 }
