@@ -42,16 +42,15 @@ namespace WebServer
             MessageParams.SenderName = settings.SenderName;
             MessageParams.TextFormat = MimeKit.Text.TextFormat.Text;
 
-            Thread DoPing = new Thread(new ThreadStart(PingWorker));
-            DoPing.Start();
+            Thread pingWorker = new Thread(new ThreadStart(PingWorker));
+            pingWorker.Start();
         }
-
 
         public void PingWorker()
         {
             List<Host> hosts = _context.Hosts.ToList();
             List<Host> changedHosts = new List<Host>();
-            
+
             MailSendAdapter emailSendAdapter = new MailSendAdapter(
                 SmtpServer: settings.SmtpServer,
                 SmtpPort: settings.SmtpPort,
@@ -59,19 +58,26 @@ namespace WebServer
 
             while (true)
             {
-                PingReply pingReply;
-                Log log = new Log();
-                foreach (Host host in hosts)
-                {
-                    pingReply = pinger.Ping(host.IpAddress);
-                    log.Status = pingReply.Status.ToString();
-                    log.Delay = (int)pingReply.RoundtripTime;
-                    log.TimeStamp = DateTime.Now;
-                    log.HostId = host.Id;
-                    log.Host = host;
-                    _context.Logs.Add(log);
-                }
 
+                var tasks = new Task[hosts.Count];
+                for (int i = 0; i < tasks.Length; i++)
+                {
+                    tasks[i] = Task.Run(() =>
+                    {
+                        PingReply pingReply;
+                        Log log = new Log();
+                        pingReply = pinger.Ping(hosts[i].IpAddress);
+                        log.Status = pingReply.Status.ToString();
+                        log.Delay = (int)pingReply.RoundtripTime;
+                        log.TimeStamp = DateTime.Now;
+                        log.HostId = hosts[i].Id; //// i всегда 4
+                            //log.Host = host;
+                            _context.Logs.Add(log);
+                    }
+                    );
+                }
+                Task.WaitAll(tasks);
+                _context.SaveChanges();
                 //changedHosts = hosts.FindAll(ChangedStatus);
 
                 /*delegate (Host host)
@@ -113,7 +119,7 @@ namespace WebServer
         {
             PingReply pingReply;
 
-            
+
             int count = hosts.Count;
             Task[] tasks = new Task[count];
             int taskIndex = -1;
@@ -121,8 +127,8 @@ namespace WebServer
             foreach (Host host in hosts)
             {
                 taskIndex++;
-                tasks[taskIndex] = Task.Factory.StartNew(() =>  
-                {                                               
+                tasks[taskIndex] = Task.Factory.StartNew(() =>
+                {
                     if (host.Condition == true)
                     {
                         //pingReply = SendPing.Ping(host.IP);

@@ -3,11 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <UserSecretsId>040fa013-a925-4568-89ab-bb7e82239f81</UserSecretsId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Models\Extensions\Host.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Remove="hosts.json" />
@@ -26,10 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HMLib\HMLib.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\Extensions\" />
   </ItemGroup>
 
   <ItemGroup>

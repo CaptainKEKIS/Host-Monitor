@@ -27,10 +27,10 @@ namespace WebServer.Models
 
 
             modelBuilder.Entity<Host>().HasData(
-                new Host { Id = 1, Name = "Google DNS", Condition = true, IpAddress = "8.8.8.8" }
-                //new Host { Name = "Quadro One", Condition = true, IpAddress = "1.1.1.1" },
-                //new Host { Name = "Untitled", Condition = false, IpAddress = "14.15.22.9" },
-                //new Host { Name = "Are u exist?", Condition = true, IpAddress = "111.111.111.111" }
+                new Host { Id = 1, Name = "Google DNS", Condition = true, IpAddress = "8.8.8.8" },
+                new Host { Id = 2, Name = "Quadro One", Condition = true, IpAddress = "1.1.1.1" },
+                new Host { Id = 3,  Name = "Untitled", Condition = false, IpAddress = "14.15.22.9" },
+                new Host { Id = 4,  Name = "Are u exist?", Condition = true, IpAddress = "111.111.111.111" }
                );
 
             //modelBuilder.Entity<Log>().HasData(
