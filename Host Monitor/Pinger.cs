@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,6 +14,11 @@ namespace Host_Monitor
 
         public int DataSize { get; set; }
 
+
+
+
+
+        #region Пока не надо
         public async Task<string> GetStatusAsync(string IpAddresses)
         {
             Ping Piping = new Ping();
@@ -57,7 +60,6 @@ namespace Host_Monitor
             return pingReply;
         }
 
-        #region Пока не надо
         public void PingAsync(string IpAddress)
         {
             Ping Piping = new Ping();
