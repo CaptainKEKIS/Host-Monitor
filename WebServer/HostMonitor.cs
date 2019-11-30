@@ -29,12 +29,6 @@ namespace WebServer
                 .UseSqlite(connection).Options;
             _context = new MonitorContext(dbContextOptions);
 
-            pinger = new HMLib.Pinger
-            {
-                DataSize = settings.DataSize,
-                TimeOut = settings.TimeOut,
-                Ttl = settings.Ttl
-            };
 
             //var intt = ConfigHelper.GetProperty("UserSettings:Ttl");
             MessageParams.MailTo = settings.MailTo;
@@ -56,27 +50,19 @@ namespace WebServer
                 SmtpPort: settings.SmtpPort,
                 Login: settings.Email, Password: settings.Password);
 
+            pinger = new HMLib.Pinger(hosts.Select(h => IPAddress.Parse(h.IpAddress)), settings.TimeOut, settings.Ttl, settings.DataSize);
+
             while (true)
             {
 
-                var tasks = new Task[hosts.Count];
-                for (int i = 0; i < tasks.Length; i++)
-                {
-                    tasks[i] = Task.Run(() =>
+                var pingResults = pinger.Pereimenovat()
+                    .Select(t => new Log
                     {
-                        PingReply pingReply;
-                        Log log = new Log();
-                        pingReply = pinger.Ping(hosts[i].IpAddress);
-                        log.Status = pingReply.Status.ToString();
-                        log.Delay = (int)pingReply.RoundtripTime;
-                        log.TimeStamp = DateTime.Now;
-                        log.HostId = hosts[i].Id; //// i всегда 4
-                            //log.Host = host;
-                            _context.Logs.Add(log);
-                    }
-                    );
-                }
-                Task.WaitAll(tasks);
+                        Delay = (t.Item1 != null)? (int)t.Item1.RoundtripTime : -1,
+                        TimeStamp = DateTime.Now,
+                        IpAddress = t.Item2.ToString()
+                    });
+                _context.Logs.AddRange(pingResults);
                 _context.SaveChanges();
                 //changedHosts = hosts.FindAll(ChangedStatus);
 

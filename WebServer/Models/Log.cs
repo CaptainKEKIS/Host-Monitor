@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebServer.Models
 {
@@ -7,11 +8,12 @@ namespace WebServer.Models
     {
         public int Id { get; set; }
         [Required]
-        public string Status { get; set; }
+        //public string Status { get; set; }
         public int Delay { get; set; }
         public DateTime TimeStamp { get; set; }
         
-        public int HostId { get; set; }
+        [ForeignKey("Host")]
+        public string IpAddress { get; set; }
         public Host Host { get; set; }
     }
 }

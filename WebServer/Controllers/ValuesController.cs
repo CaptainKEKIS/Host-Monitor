@@ -26,48 +26,48 @@ namespace WebServer.Controllers
 
         public ValuesController(Models.MonitorContext context)
         {
-            
+
             _context = context;
         }
 
         // GET /api/values/PingHost?login=1&pass=1
-        [HttpGet("{PingHost}")]
-        public ActionResult<object> Get(string login, string pass/*, IConfiguration config*/)
-        {
-            var result = _context.Hosts
-                .Where(x => x.Id == 1)
-                .FirstOrDefault();
-            return result;
-            /*
-            Settings settings = JsonConvert.DeserializeObject<Settings>(config.GetSection("UserSettings").Value);
-            string hostsPath = settings.PathToHostsFile;
-            List<Host> hosts = Host.ReadHostsFromFile(hostsPath);//сделать шоб была глобальной
-            List<PingReply> pingReply = new List<PingReply>();
+        //[HttpGet("{PingHost}")]
+        //public ActionResult<object> Get(string login, string pass/*, IConfiguration config*/)
+        //{
+        //    //var result = _context.Hosts
+        //    //    .Where(x => x.Id == 1)
+        //    //    .FirstOrDefault();
+        //    //return result;
+        //    /*
+        //    Settings settings = JsonConvert.DeserializeObject<Settings>(config.GetSection("UserSettings").Value);
+        //    string hostsPath = settings.PathToHostsFile;
+        //    List<Host> hosts = Host.ReadHostsFromFile(hostsPath);//сделать шоб была глобальной
+        //    List<PingReply> pingReply = new List<PingReply>();
 
-            Pinger SendPing = new Pinger
-            {
-                DataSize = settings.DataSize,
-                TimeOut = settings.TimeOut,
-                Ttl = settings.Ttl
-            };
+        //    Pinger SendPing = new Pinger
+        //    {
+        //        DataSize = settings.DataSize,
+        //        TimeOut = settings.TimeOut,
+        //        Ttl = settings.Ttl
+        //    };
 
-            int count = hosts.Count;
-            Task[] tasks = new Task[count];
-            int taskIndex = -1;
+        //    int count = hosts.Count;
+        //    Task[] tasks = new Task[count];
+        //    int taskIndex = -1;
 
-            foreach (Host host in hosts)
-            {
-                taskIndex++;
-                tasks[taskIndex] = Task.Factory.StartNew(() =>
-                {
-                    pingReply.Add(SendPing.Ping(host.IP));
-                });
-            }
-            Task.WaitAll(tasks);
-            string Replies = JsonConvert.SerializeObject(pingReply);
-            return Replies;
-            */
-        }
+        //    foreach (Host host in hosts)
+        //    {
+        //        taskIndex++;
+        //        tasks[taskIndex] = Task.Factory.StartNew(() =>
+        //        {
+        //            pingReply.Add(SendPing.Ping(host.IP));
+        //        });
+        //    }
+        //    Task.WaitAll(tasks);
+        //    string Replies = JsonConvert.SerializeObject(pingReply);
+        //    return Replies;
+        //    */
+        //}
         // POST api/values
         [HttpPost]
         public void Post([FromBody] string value)

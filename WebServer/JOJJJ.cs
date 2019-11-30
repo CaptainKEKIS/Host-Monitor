@@ -14,27 +14,12 @@ namespace Pinnger
         public class Pinger : IDisposable
         {
             public int TimeOut { get; set; }
-
             public int Ttl { get; set; }
-
             public int DataSize { get; set; }
+            public PingReply[] PingResults { get; private set; }
+            private Ping[] Pings { get; set; }
 
-            private Ping Ping { get; }
-
-
-            void PingHost(IPAddress address)
-            {
-                //release 
-            }
-
-            public Pinger(IEnumerable<IPAddress> addresses)
-            {
-            }
-
-            public void TryPing()
-            {
-
-            }
+            
 
             #region IDisposable Support
             private bool disposedValue = false; // Для определения избыточных вызовов

@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="JOJJJ.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="hosts.json" />
     <Content Remove="Settings.json" />
   </ItemGroup>

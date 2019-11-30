@@ -100,36 +100,36 @@ namespace Host_Monitor
 
         public static List<Host> CheckStatus(List<Host> hosts)
         {
-            PingReply pingReply;
+            //PingReply pingReply;
+            
+            //Pinger SendPing = new Pinger()
+            //{
+            //    DataSize = settings.DataSize,      //
+            //    TimeOut = settings.TimeOut,    //TODO:Перенести в класс, сделать файл с настройками
+            //    Ttl = settings.Ttl         //
+            //};
+            //int count = hosts.Count;
+            //Task[] tasks = new Task[count];
+            //int taskIndex = -1;
 
-            Pinger SendPing = new Pinger
-            {
-                DataSize = settings.DataSize,      //
-                TimeOut = settings.TimeOut,    //TODO:Перенести в класс, сделать файл с настройками
-                Ttl = settings.Ttl         //
-            };
-            int count = hosts.Count;
-            Task[] tasks = new Task[count];
-            int taskIndex = -1;
-
-            foreach (Host host in hosts)
-            {
-                taskIndex++;
-                tasks[taskIndex] = Task.Factory.StartNew(() =>  //перенести проверку статуса куда-нибудь.
-                {                                               //оставить только пинг и возвращать лист пингрезултов
-                    if (host.Condition == true)
-                    {
-                        pingReply = SendPing.Ping(host.IP);
-                        if (pingReply.Status.ToString() != host.Status && !String.IsNullOrEmpty(host.Status))
-                        {
-                            host.StatusChanged = true;
-                            Console.WriteLine("Хост: " + host.Name + "с ip: " + host.IP + " изменил статус с " + host.Status + " на " + pingReply.Status.ToString());
-                        }
-                        host.Status = pingReply.Status.ToString();
-                    }
-                });
-            }
-            Task.WaitAll(tasks);
+            //foreach (Host host in hosts)
+            //{
+            //    taskIndex++;
+            //    tasks[taskIndex] = Task.Factory.StartNew(() =>  //перенести проверку статуса куда-нибудь.
+            //    {                                               //оставить только пинг и возвращать лист пингрезултов
+            //        if (host.Condition == true)
+            //        {
+            //            pingReply = SendPing.Ping(host.IP);
+            //            if (pingReply.Status.ToString() != host.Status && !String.IsNullOrEmpty(host.Status))
+            //            {
+            //                host.StatusChanged = true;
+            //                Console.WriteLine("Хост: " + host.Name + "с ip: " + host.IP + " изменил статус с " + host.Status + " на " + pingReply.Status.ToString());
+            //            }
+            //            host.Status = pingReply.Status.ToString();
+            //        }
+            //    });
+            //}
+            //Task.WaitAll(tasks);
             return hosts;
         }
     }

@@ -6,15 +6,13 @@ namespace WebServer.Models
 {
     public partial class Host
     {    
-        
-        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
-        [Required]
+        [Key]
         public string IpAddress { get; set; }
         public bool Condition { get; set; }
-        [NotMapped]
-        public bool StatusChanged { get; set; }
+        //[NotMapped]
+        //public bool StatusChanged { get; set; }
 
         public List<Log> Logs { get; set; }
     }
