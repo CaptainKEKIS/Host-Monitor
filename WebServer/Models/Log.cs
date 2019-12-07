@@ -15,5 +15,8 @@ namespace WebServer.Models
         [ForeignKey("Host")]
         public string IpAddress { get; set; }
         public Host Host { get; set; }
+
+        [NotMapped]
+        public ushort Generation { get; set; }
     }
 }

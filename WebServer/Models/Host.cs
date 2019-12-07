@@ -11,8 +11,6 @@ namespace WebServer.Models
         [Key]
         public string IpAddress { get; set; }
         public bool Condition { get; set; }
-        //[NotMapped]
-        //public bool StatusChanged { get; set; }
 
         public List<Log> Logs { get; set; }
     }

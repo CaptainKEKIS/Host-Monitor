@@ -64,24 +64,17 @@ namespace HMLib
             {
                 var tcs = new TaskCompletionSource<Tuple<PingReply, object>>();
                 PingCompletedEventHandler act = null;
-                
-                    act = (obj, sender) =>
-                    {
-                        ping.PingCompleted -= act;
-                        if (sender.Reply != null && sender.Reply.Status == IPStatus.Success)
-                        {
-                            Console.WriteLine($"host: {sender.UserState}\tdelay: {sender.Reply.RoundtripTime}\tstatus: {sender.Reply.Status}");
-                        }
-                        //else
-                        //{
-                        //    Console.WriteLine($"host: {sender.UserState}\tdelay: null\tstatus: null");
-                        //}
-                        tcs.SetResult(Tuple.Create(sender.Reply, sender.UserState));
-                    };
-                    ping.PingCompleted += act;
-                    ping.SendAsync(epIP, TimeOut, PingBuffer, POptions, epIP);
-                    return tcs.Task;
-                
+
+                act = (obj, sender) =>
+                {
+                    ping.PingCompleted -= act;
+                    Console.WriteLine($"host: {sender.UserState}\tdelay: {((sender.Reply != null) ? (sender.Reply.Status != IPStatus.Success) ? -1 : sender.Reply.RoundtripTime : -1)}\tstatus: {((sender.Reply != null) ? sender.Reply.Status : IPStatus.Unknown)}");
+                    tcs.SetResult(Tuple.Create(sender.Reply, sender.UserState));
+                };
+                ping.PingCompleted += act;
+                ping.SendAsync(epIP, TimeOut, PingBuffer, POptions, epIP);
+                return tcs.Task;
+
             }
             catch (Exception ex)
             {
