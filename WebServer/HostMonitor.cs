@@ -16,24 +16,29 @@ namespace WebServer
 {
     public class PingerEventArgs
     {
-        public List<Log> PingResults { get; set; }
+        public IEnumerable<Log> PingResults { get; set; }
     }
 
     public class HostMonitor
     {
+        public bool IsWorking {
+            get
+            {
+                return _isWorking;
+            }
+        }
         public EventHandler<PingerEventArgs> OnPingCompleted;
 
-        private readonly MonitorContext _context;
+        private bool _isWorking = false;
         //IConfiguration configuration;
         private HMLib.Settings _settings = null;
         private HMLib.Pinger _pinger;
-        private List<Host> _hosts;
-        private string _connection;
+        private readonly List<Host> _hosts;
 
-        public HostMonitor(HMLib.Settings settings, string connectionString)
+        public HostMonitor(HMLib.Settings settings, List<Host> hosts)
         {
             _settings = settings;
-            _connection = connectionString;
+            _hosts = hosts;
             //var dbContextOptions = new DbContextOptionsBuilder<MonitorContext>()
             //    .UseSqlite(connection).Options;
             //_context = new MonitorContext(dbContextOptions);
@@ -44,27 +49,27 @@ namespace WebServer
             //MessageParams.ReplyTo = settings.ReplyTo;
             //MessageParams.SenderName = settings.SenderName;
             //MessageParams.TextFormat = MimeKit.Text.TextFormat.Text;
+        }
 
+        public void Start()
+        {
             Thread pingWorker = new Thread(new ThreadStart(PingWorker));
             pingWorker.Start();
+            _isWorking = true;
         }
 
         public void PingWorker()
         {
-            List<Host> hosts = _context.Hosts.ToList();
-            List<Host> changedHosts = new List<Host>();
-
             //MailSendAdapter emailSendAdapter = new MailSendAdapter(
             //    SmtpServer: settings.SmtpServer,
             //    SmtpPort: settings.SmtpPort,
             //    Login: settings.Email, Password: settings.Password);
 
-            pinger = new HMLib.Pinger(hosts.Select(h => IPAddress.Parse(h.IpAddress)), settings.TimeOut, settings.Ttl, settings.DataSize);
+            _pinger = new HMLib.Pinger(_hosts.Select(h => IPAddress.Parse(h.IpAddress)), _settings.TimeOut, _settings.Ttl, _settings.DataSize);
 
             while (true)
             {
-                List<Log> logs = new List<Log>();
-                var pingResults = pinger.Pereimenovat()
+                var pingResults = _pinger.Pereimenovat()
                     .Select(t => new Log
                     {
                         Delay = (t.Item1 != null) ? (t.Item1.Status != IPStatus.Success) ? -1 : (int)t.Item1.RoundtripTime : -1,
@@ -86,7 +91,8 @@ namespace WebServer
                     };
                     emailSendAdapter.Send(message); //SendAsync чёт не работает
                 }
-                Thread.Sleep(settings.PingInterval);*/
+                */
+                Thread.Sleep(_settings.PingInterval);
             }
         }
     }

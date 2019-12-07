@@ -27,18 +27,15 @@ namespace WebServer
             // получаем строку подключения из файла конфигурации
             string connection = Configuration.GetConnectionString("DefaultConnection");
             // добавляем контекст MobileContext в качестве сервиса в приложение
-            services.AddDbContext<MonitorContext>(options =>
-                options.UseSqlite(connection));
+            services.AddDbContext<MonitorContext>(options => options.UseSqlite(connection));
             services.AddMvc();
-
+            DbContextOptionsBuilder dbContextBuilder = new DbContextOptionsBuilder();
+            dbContextBuilder.UseSqlite(connection);
 
             var o = new DbContextOptionsBuilder<MonitorContext>();
             var c = o.UseSqlite(connection).Options;
             MonitorContext mc = new MonitorContext(c);
             var serviceCollection = new ServiceCollection();
-
-            HostMonitor hostMonitor = new HostMonitor();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

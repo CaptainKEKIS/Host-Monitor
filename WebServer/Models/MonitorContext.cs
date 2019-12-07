@@ -35,22 +35,7 @@ namespace WebServer.Models
             .Select( s => new Host { IpAddress = s, Condition = true, Name = s })
             .ToArray();
 
-            modelBuilder.Entity<Host>().HasData(
-                ips
-            /*    new Host {  Name = "Google DNS", Condition = true, IpAddress = "8.8.8.8" },
-                new Host { Name = "Quadro One", Condition = true, IpAddress = "1.1.1.1" },
-                new Host { Name = "Untitled", Condition = false, IpAddress = "14.15.22.9" },
-                new Host {  Name = "Are u exist?", Condition = true, IpAddress = "111.111.111.111" }
-              */ );
-
-            //modelBuilder.Entity<Log>().HasData(
-            //    new Log { Delay = 5, HostId = 1, Status = "OK!", TimeStamp = DateTime.Now },
-            //    new Log { Delay = 1, HostId = 1, Status = "OK!", TimeStamp = DateTime.Now },
-            //    new Log { Delay = 6, HostId = 1, Status = "OK!", TimeStamp = DateTime.Now },
-            //    new Log { Delay = 2, HostId = 1, Status = "OK!", TimeStamp = DateTime.Now },
-            //    new Log { Delay = 3, HostId = 1, Status = "OK!", TimeStamp = DateTime.Now },
-            //    new Log { Delay = 5, HostId = 1, Status = "OK!", TimeStamp = DateTime.Now }
-            //    );
+            modelBuilder.Entity<Host>().HasData(ips);
         }
     }
 }
