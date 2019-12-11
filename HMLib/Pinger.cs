@@ -68,7 +68,7 @@ namespace HMLib
                 act = (obj, sender) =>
                 {
                     ping.PingCompleted -= act;
-                    Console.WriteLine($"host: {sender.UserState}\tdelay: {((sender.Reply != null) ? (sender.Reply.Status != IPStatus.Success) ? -1 : sender.Reply.RoundtripTime : -1)}\tstatus: {((sender.Reply != null) ? sender.Reply.Status : IPStatus.Unknown)}");
+                    Console.WriteLine($"host: {sender.UserState}\tdelay: {((sender.Reply != null) ? (sender.Reply.Status != IPStatus.Success) ? -1 : ((int)sender.Reply.RoundtripTime == 0) ? 1 : (int)sender.Reply.RoundtripTime : -1)}\tstatus: {((sender.Reply != null) ? sender.Reply.Status : IPStatus.Unknown)}");
                     tcs.SetResult(Tuple.Create(sender.Reply, sender.UserState));
                 };
                 ping.PingCompleted += act;

@@ -1,15 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Threading;
-using System.Threading.Tasks;
 using WebServer.Models;
 
 namespace WebServer
@@ -35,14 +29,10 @@ namespace WebServer
         private HMLib.Pinger _pinger;
         private readonly List<Host> _hosts;
 
-        public HostMonitor(HMLib.Settings settings, List<Host> hosts)
+        public HostMonitor(HMLib.Settings settings, IEnumerable<Host> hosts)
         {
             _settings = settings;
-            _hosts = hosts;
-            //var dbContextOptions = new DbContextOptionsBuilder<MonitorContext>()
-            //    .UseSqlite(connection).Options;
-            //_context = new MonitorContext(dbContextOptions);
-
+            _hosts = hosts.ToList();
 
             ////var intt = ConfigHelper.GetProperty("UserSettings:Ttl");
             //MessageParams.MailTo = settings.MailTo;
@@ -72,26 +62,12 @@ namespace WebServer
                 var pingResults = _pinger.Pereimenovat()
                     .Select(t => new Log
                     {
-                        Delay = (t.Item1 != null) ? (t.Item1.Status != IPStatus.Success) ? -1 : (int)t.Item1.RoundtripTime : -1,
+                        Delay = (t.Item1 != null) ? (t.Item1.Status != IPStatus.Success) ? -1 : ((int)t.Item1.RoundtripTime == 0) ? 1 : (int)t.Item1.RoundtripTime : -1,
                         TimeStamp = DateTime.Now,
                         IpAddress = t.Item2.ToString()
                     });
                 OnPingCompleted?.Invoke(this, new PingerEventArgs { PingResults = pingResults.ToList() });
-                //RiseFinishEvent(pingResults.ToList());
-                /*
-                _context.Logs.AddRange(pingResults);
-                _context.SaveChanges();
-
-                foreach (Host host in changedHosts)
-                {
-                    MessageParams message = new MessageParams
-                    {
-                        //Body = "Хост: " + host.Name + "с ip: " + host.IpAddress + " изменил статус на " + host.Status,
-                        //Caption = host.Name + " статус " + host.Status
-                    };
-                    emailSendAdapter.Send(message); //SendAsync чёт не работает
-                }
-                */
+                
                 Thread.Sleep(_settings.PingInterval);
             }
         }

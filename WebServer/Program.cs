@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace WebServer
             //UpkServices.ServiceProvider.RegisterService< MonitorContext>(_context);
             var context = UpkServices.ServiceProvider.GetService<MonitorContext>();
             //var address  = context.Hosts.First().IpAddress;
-            
+
             //for (int i = 0; i < 10000; i++) {
 
             //    Parallel.For(0, 4, l=> {
@@ -45,12 +46,13 @@ namespace WebServer
             //    Console.WriteLine(i);
             //    //Thread.Sleep(100);
             //}
-            
-            
-           List<Models.Host> hosts = _context.Hosts.ToList();
-           HostMonitor hostMonitor = new HostMonitor(settings, hosts);
-           hostMonitor.OnPingCompleted += ResultToDataBase;
-           hostMonitor.Start();
+
+
+            List<Models.Host> hosts = _context.Hosts.ToList();
+            HostMonitor hostMonitor = new HostMonitor(settings, hosts);
+            hostMonitor.OnPingCompleted += ResultToDataBase;
+            hostMonitor.OnPingCompleted += CheckChanges;
+            hostMonitor.Start();
 
             CreateWebHostBuilder(args).Build().Run();
         }
@@ -60,9 +62,11 @@ namespace WebServer
         static object lockObject = new object();
         public static async void ResultToDataBase(object sender, PingerEventArgs args)
         {
-            lock (lockObject) { 
-                if (count % 100==0) {
-                    if( MonitorContext != null)
+            lock (lockObject)
+            {
+                if (count % 100 == 0)
+                {
+                    if (MonitorContext != null)
                     {
                         MonitorContext.Dispose();
                     }
@@ -76,8 +80,54 @@ namespace WebServer
             }
             await MonitorContext.Logs.AddRangeAsync(args.PingResults);
             MonitorContext.SaveChanges();
+        }
+
+        static List<Log> localLogs;
+        public static void CheckChanges(object sender, PingerEventArgs args)
+        {
+            if (localLogs == null)
+            {
+                localLogs = args.PingResults.ToList();
             }
-         
+            else
+            {
+                var result = localLogs.Except(args.PingResults, new LogsComparer());
+            }
+        }
+
+        class LogsComparer : IEqualityComparer<Log>
+        {
+            public bool Equals(Log x, Log y)
+            {
+
+                //Check whether the compared objects reference the same data.
+                if (Object.ReferenceEquals(x, y))
+                    return true;
+
+                //Check whether any of the compared objects is null.
+                if (Object.ReferenceEquals(x, null) || Object.ReferenceEquals(y, null))
+                    return false;
+
+                //Check whether the products' properties are equal.
+                return x.IpAddress == y.IpAddress && x.Delay * y.Delay > 0;
+            }
+
+            public int GetHashCode(Log log)
+            {
+                //Check whether the object is null
+                if (Object.ReferenceEquals(log, null)) return 0;
+
+                //Get hash code for the Name field if it is not null.
+                int hashLogIp = log.IpAddress == null ? 0 : log.IpAddress.GetHashCode();
+
+                //Get hash code for the Code field.
+                int hashLogDelay = log.Delay.GetHashCode();
+
+                //Calculate the hash code for the product.
+                return hashLogIp ^ hashLogDelay;
+            }
+        }
+
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
