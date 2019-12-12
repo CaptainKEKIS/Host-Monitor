@@ -25,14 +25,14 @@
                     <DataGridTemplateColumn Width="*" x:Name="HostName" Header="Имя хоста">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=HostName}" Width="Auto" MaxWidth="250" Padding="6,2"/>
+                                <TextBlock Text="{Binding Path=Name}" Width="Auto" MaxWidth="250" Padding="6,2"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Width="110" x:Name="IPAddress" Header="IP адрес">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Address}" Width="Auto" Padding="6,2"/>
+                                <TextBlock Text="{Binding Path=IpAddress}" Width="Auto" Padding="6,2"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

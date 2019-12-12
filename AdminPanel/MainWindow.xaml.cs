@@ -27,10 +27,10 @@ namespace AdminPanel
         public MainWindow()
         {
             InitializeComponent();
-            List<PingReply> pingReplies = new List<PingReply>();
-            ResultDataGrid.ItemsSource = pingReplies;
+            List<Host> hosts = new List<Host>();
+            ResultDataGrid.ItemsSource = hosts;
 
-            string address = "http://localhost:5000/api/values/PingHost?login=1&pass=1";
+            string address = "http://localhost:10500/api/hosts";
             try
             {
                 using (var client = new HttpClient())
@@ -40,7 +40,7 @@ namespace AdminPanel
                     {
                         HttpContent responseContent = Response.Content;
                         var json = responseContent.ReadAsStringAsync().Result;
-                        pingReplies = JsonConvert.DeserializeObject<List<PingReply>>(json);/////////IPAddress не сериализуется
+                        hosts = JsonConvert.DeserializeObject<List<Host>>(json);
                     }
                 }
             }
@@ -49,7 +49,7 @@ namespace AdminPanel
                 throw;
             }
 
-            //ResultDataGrid.ItemsSource = pingReplies;
+            ResultDataGrid.ItemsSource = hosts;
         }
     }
 }
