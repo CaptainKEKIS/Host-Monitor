@@ -105,7 +105,7 @@ namespace WebServer
             {
                 result = localLogs.Except(args.PingResults, new LogsComparer()).ToList();
             }
-            foreach (var log in localLogs)
+            foreach (var log in localLogs)//generation ставится ++ для всех. потом все отправляет в письме. Плохо. Можно generation сразу задать 11.
             {
                 if (result.Exists(l => l.IpAddress == log.IpAddress))
                 {
@@ -120,20 +120,20 @@ namespace WebServer
 
         public static void CheckGeneration(object sender, PingerEventArgs args)
         {
-            foreach (var log in localLogs)
+            foreach (var log in localLogs)//добавлять хосты в список и посылать одним письмом
             {
                 if (log.Generation == 10)
                 {
                     MessageParams message = new MessageParams
                     {
-                        Body = $"Хост: {log.Host.Name} с ip: {log.IpAddress} изменил статус на {(log.Delay > 0 ? "w" : "w")}",
-                        Caption = host.Name + " статус " + host.Status
+                        Body = $"Хост: {log.Host.Name} с ip: {log.IpAddress} изменил статус на {(log.Delay > 0 ? "Работает" : "Не отвечает")}",
+                        Caption = $"{ log.Host.Name} статус { (log.Delay > 0 ? "Работает" : "Не отвечает")}"
                     };
-                    emailSendAdapter.Send
+                    emailSendAdapter.Send(message);
                 }
             }
         }
-        
+
         class LogsComparer : IEqualityComparer<Log>
         {
             public bool Equals(Log x, Log y)
