@@ -24,7 +24,7 @@ namespace WebServer.Models
                 .ValueGeneratedOnAdd();
 
             Random rnd = new Random();
-            var ips = Enumerable.Range(0, 10000).Select(i => {
+            var ips = Enumerable.Range(0, 1000).Select(i => {
                 int i1 = rnd.Next(1,256);
                 int i2 = rnd.Next(1,256);
                 int i3 = rnd.Next(1,256);

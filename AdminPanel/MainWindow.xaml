@@ -39,7 +39,7 @@
                     <DataGridTemplateColumn Width="180" x:Name="Status" Header="Статус">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Status}" Width="Auto" Padding="6,2" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding Path=Logs.Delay}" Width="Auto" Padding="6,2" HorizontalAlignment="Center"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

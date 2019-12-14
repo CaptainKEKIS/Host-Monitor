@@ -59,11 +59,12 @@ namespace WebServer
 
             while (true)
             {
+                var logTime = DateTime.Now;
                 var pingResults = _pinger.Pereimenovat()
                     .Select(t => new Log
                     {
                         Delay = (t.Item1 != null) ? (t.Item1.Status != IPStatus.Success) ? -1 : ((int)t.Item1.RoundtripTime == 0) ? 1 : (int)t.Item1.RoundtripTime : -1,
-                        TimeStamp = DateTime.Now,
+                        TimeStamp = logTime,
                         IpAddress = t.Item2.ToString()
                     });
                 OnPingCompleted?.Invoke(this, new PingerEventArgs { PingResults = pingResults.ToList() });

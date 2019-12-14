@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -22,9 +23,24 @@ namespace WebServer.Controllers
 
         // GET: api/Hosts
         [HttpGet]
-        public IEnumerable<Host> GetHosts()
+        public IEnumerable<object>tHosts()
         {
-            return _context.Hosts;
+            var maxTime = _context.Logs.Max(t => t.TimeStamp);
+            var result = _context.Logs
+                .Where(log => log.TimeStamp == maxTime)
+                .Select(log => new { log.IpAddress, log.TimeStamp, log.Delay, HostName = log.Host.Name, Condition = log.Host.Condition })
+                .ToArray();
+            /*List<Host> hosts = _context.Hosts.Select(h => new Host
+            {
+                Name = h.Name,
+                IpAddress = h.IpAddress,
+                Condition = h.Condition,
+                Logs = h.Logs
+                .Where(l => l.Id == h.Logs.Max(lm => lm.Id))
+                .ToList()
+            })
+            .ToList();*/
+            return result;
         }
 
         // GET: api/Hosts/5

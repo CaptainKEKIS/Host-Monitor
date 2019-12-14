@@ -8,6 +8,6 @@ namespace AdminPanel
         public string IpAddress { get; set; }
         public bool Condition { get; set; }
 
-        public List<Log> Logs { get; set; }
+        public Log Log { get; set; }
     }
 }
