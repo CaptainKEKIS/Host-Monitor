@@ -6,6 +6,10 @@
         xmlns:local="clr-namespace:AdminPanel"
         mc:Ignorable="d"
         Title="MainWindow" Height="484.951" Width="1034.466">
+    <Window.Resources>
+        <local:ConditionToColorConverter x:Key="MyConditionConverter"/>
+        <local:StatusToColorConverter x:Key="MyStatusConverter"/>
+    </Window.Resources>
     <Grid>
         <DockPanel>
             <Menu DockPanel.Dock="Top">
@@ -21,11 +25,12 @@
                 <Button Content="Add"/>
             </StackPanel>
             <DataGrid x:Name="ResultDataGrid" AutoGenerateColumns="False" RowDetailsVisibilityMode="VisibleWhenSelected">
+                
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Width="*" x:Name="HostName" Header="Имя хоста">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Name}" Width="Auto" MaxWidth="250" Padding="6,2"/>
+                                <TextBlock Text="{Binding Path=Name}" Width="Auto" MaxWidth="250" Padding="6,2" Background="{Binding Status, Converter={StaticResource MyStatusConverter}}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -39,7 +44,7 @@
                     <DataGridTemplateColumn Width="180" x:Name="Status" Header="Статус">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=Logs.Delay}" Width="Auto" Padding="6,2" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding Path=Status}" Width="Auto" Padding="6,2" HorizontalAlignment="Center"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -53,8 +58,11 @@
                     <DataGridTemplateColumn Width="80" x:Name="Condition" Header="Состояние">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
+                                <Rectangle Fill="{Binding Condition, Converter={StaticResource MyConditionConverter}}" Width="10" Height="10"/>
+                                <!--
                                 <TextBlock Text="{Binding Path=Condition}" Width="Auto" Padding="6,2" HorizontalAlignment="Center"/>
-                            </DataTemplate>
+                                -->
+                                </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>

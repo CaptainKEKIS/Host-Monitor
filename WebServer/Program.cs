@@ -20,6 +20,7 @@ namespace WebServer
 {
     public class Program
     {
+        static MailSendAdapter emailSendAdapter;
         public static void Main(string[] args)
         {
             //MonitorContext _context;
@@ -47,11 +48,21 @@ namespace WebServer
             //    //Thread.Sleep(100);
             //}
 
+            MessageParams.MailTo = settings.MailTo;
+            MessageParams.ReplyTo = settings.ReplyTo;
+            MessageParams.SenderName = settings.SenderName;
+            MessageParams.TextFormat = MimeKit.Text.TextFormat.Text;
+
+            emailSendAdapter = new MailSendAdapter(
+                SmtpServer: settings.SmtpServer,
+                SmtpPort: settings.SmtpPort,
+                Login: settings.Email, Password: settings.Password);
 
             List<Models.Host> hosts = _context.Hosts.ToList();
             HostMonitor hostMonitor = new HostMonitor(settings, hosts);
             hostMonitor.OnPingCompleted += ResultToDataBase;
             hostMonitor.OnPingCompleted += CheckChanges;
+            hostMonitor.OnPingCompleted += CheckGeneration; //проверка generation на 10. Если 10 отправить письмо.
             hostMonitor.Start();
 
             CreateWebHostBuilder(args).Build().Run();
@@ -85,16 +96,44 @@ namespace WebServer
         static List<Log> localLogs;
         public static void CheckChanges(object sender, PingerEventArgs args)
         {
+            List<Log> result = new List<Log>();
             if (localLogs == null)
             {
                 localLogs = args.PingResults.ToList();
             }
             else
             {
-                var result = localLogs.Except(args.PingResults, new LogsComparer());
+                result = localLogs.Except(args.PingResults, new LogsComparer()).ToList();
+            }
+            foreach (var log in localLogs)
+            {
+                if (result.Exists(l => l.IpAddress == log.IpAddress))
+                {
+                    log.Generation = 0;
+                }
+                else
+                {
+                    log.Generation++;
+                }
             }
         }
 
+        public static void CheckGeneration(object sender, PingerEventArgs args)
+        {
+            foreach (var log in localLogs)
+            {
+                if (log.Generation == 10)
+                {
+                    MessageParams message = new MessageParams
+                    {
+                        Body = $"Хост: {log.Host.Name} с ip: {log.IpAddress} изменил статус на {(log.Delay > 0 ? "w" : "w")}",
+                        Caption = host.Name + " статус " + host.Status
+                    };
+                    emailSendAdapter.Send
+                }
+            }
+        }
+        
         class LogsComparer : IEqualityComparer<Log>
         {
             public bool Equals(Log x, Log y)

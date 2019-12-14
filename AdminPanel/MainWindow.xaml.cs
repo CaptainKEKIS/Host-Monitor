@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -28,7 +29,6 @@ namespace AdminPanel
         {
             InitializeComponent();
             List<Host> hosts = new List<Host>();
-            ResultDataGrid.ItemsSource = hosts;
 
             string address = "http://localhost:10500/api/hosts";
             try
@@ -53,3 +53,4 @@ namespace AdminPanel
         }
     }
 }
+

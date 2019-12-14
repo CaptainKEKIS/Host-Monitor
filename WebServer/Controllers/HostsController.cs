@@ -28,7 +28,7 @@ namespace WebServer.Controllers
             var maxTime = _context.Logs.Max(t => t.TimeStamp);
             var result = _context.Logs
                 .Where(log => log.TimeStamp == maxTime)
-                .Select(log => new { log.IpAddress, log.TimeStamp, log.Delay, HostName = log.Host.Name, Condition = log.Host.Condition })
+                .Select(log => new { log.IpAddress, log.Delay, Name = log.Host.Name, Condition = log.Host.Condition })
                 .ToArray();
             /*List<Host> hosts = _context.Hosts.Select(h => new Host
             {

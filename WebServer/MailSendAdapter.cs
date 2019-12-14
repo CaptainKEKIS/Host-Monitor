@@ -12,8 +12,7 @@ namespace WebServer
         /// <summary>Электронная почта отправителя</summary>
         public string Login { get; }
 
-        public MailSendAdapter(string SmtpServer, int SmtpPort,
-            string Login, string Password)
+        public MailSendAdapter(string SmtpServer, int SmtpPort, string Login, string Password)
         {
             this.Login = Login;
             _smtpClient = new SmtpClient();
