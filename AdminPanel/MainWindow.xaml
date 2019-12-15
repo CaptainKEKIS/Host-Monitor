@@ -17,12 +17,17 @@
                 </MenuItem>
                 <MenuItem Header="Settings"/>
             </Menu>
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="top">
                 <TextBlock Text="Host Name"/>
                 <TextBox Width="300"/>
                 <TextBlock Text="Address"/>
                 <TextBox Width="200" />
                 <Button Content="Add"/>
+                <TextBlock Text="Обновление раз в" HorizontalAlignment="Right"/>
+                <ComboBox  HorizontalAlignment="Right">
+                    <ListBoxItem Content="5"/>
+                    <ListBoxItem Content="10"/>
+                </ComboBox>
             </StackPanel>
             <DataGrid x:Name="ResultDataGrid" AutoGenerateColumns="False" RowDetailsVisibilityMode="VisibleWhenSelected">
                 
