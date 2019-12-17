@@ -29,7 +29,7 @@
                     <ListBoxItem Content="10"/>
                 </ComboBox>
             </StackPanel>
-            <DataGrid x:Name="ResultDataGrid" AutoGenerateColumns="False" RowDetailsVisibilityMode="VisibleWhenSelected">
+            <DataGrid x:Name="ResultDataGrid" ItemsSource="{Binding Hosts}" AutoGenerateColumns="False" RowDetailsVisibilityMode="VisibleWhenSelected">
                 
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Width="*" x:Name="HostName" Header="Имя хоста">

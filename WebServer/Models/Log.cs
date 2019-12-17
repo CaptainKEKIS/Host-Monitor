@@ -17,6 +17,6 @@ namespace WebServer.Models
         public Host Host { get; set; }
 
         [NotMapped]
-        public ushort Generation { get; set; }
+        public ushort Generation { get; set; } = 11;
     }
 }

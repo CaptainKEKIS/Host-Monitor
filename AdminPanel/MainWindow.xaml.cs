@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -26,38 +27,41 @@ namespace AdminPanel
     /// </summary>
     public partial class MainWindow : Window
     {
+        private ObservableCollection<Host> _hosts;
+        public ObservableCollection<Host> Hosts
+        {
+            get
+            {
+                return _hosts;
+            }
+            set
+            {
+                _hosts = value;
+            }
+        }
         public MainWindow()
         {
             InitializeComponent();
-
-            List<Host> hosts = new List<Host>();
-            ResultDataGrid.ItemsSource = hosts;
             string address = "http://localhost:10500/api/hosts";
-            Task task = new Task(() =>
-                {
-                    try
-                    {
-                        using (var client = new HttpClient())
-                        {
-                            HttpResponseMessage Response = client.GetAsync(address).Result;
-                            if (Response.StatusCode == HttpStatusCode.OK)
-                            {
-                                HttpContent responseContent = Response.Content;
-                                var json = responseContent.ReadAsStringAsync().Result;
-                                hosts = JsonConvert.DeserializeObject<List<Host>>(json);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Произошла ошибка!\n" + ex.Message);
-                    }
 
-                    Thread.Sleep(10000);
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    HttpResponseMessage Response = client.GetAsync(address).Result;
+                    if (Response.StatusCode == HttpStatusCode.OK)
+                    {
+                        HttpContent responseContent = Response.Content;
+                        var json = responseContent.ReadAsStringAsync().Result;
+                        Hosts = JsonConvert.DeserializeObject<ObservableCollection<Host>>(json);
+                    }
                 }
-            );
-            task.Start();
-            ResultDataGrid.Items.Refresh();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Произошла ошибка!\n" + ex.Message);
+            }
+
         }
     }
 }
