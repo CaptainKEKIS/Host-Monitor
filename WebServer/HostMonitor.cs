@@ -33,12 +33,6 @@ namespace WebServer
         {
             _settings = settings;
             _hosts = hosts.ToList();
-
-            ////var intt = ConfigHelper.GetProperty("UserSettings:Ttl");
-            //MessageParams.MailTo = settings.MailTo;
-            //MessageParams.ReplyTo = settings.ReplyTo;
-            //MessageParams.SenderName = settings.SenderName;
-            //MessageParams.TextFormat = MimeKit.Text.TextFormat.Text;
         }
 
         public void Start()
@@ -50,11 +44,6 @@ namespace WebServer
 
         public void PingWorker()
         {
-            //MailSendAdapter emailSendAdapter = new MailSendAdapter(
-            //    SmtpServer: settings.SmtpServer,
-            //    SmtpPort: settings.SmtpPort,
-            //    Login: settings.Email, Password: settings.Password);
-
             _pinger = new HMLib.Pinger(_hosts.Select(h => IPAddress.Parse(h.IpAddress)), _settings.TimeOut, _settings.Ttl, _settings.DataSize);
 
             while (true)

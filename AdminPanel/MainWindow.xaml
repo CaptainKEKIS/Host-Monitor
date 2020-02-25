@@ -19,14 +19,16 @@
             </Menu>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="top">
                 <TextBlock Text="Host Name"/>
-                <TextBox Width="300"/>
+                <TextBox x:Name="TextBoxHostName" Width="300"/>
                 <TextBlock Text="Address"/>
-                <TextBox Width="200" />
-                <Button Content="Add"/>
+                <TextBox x:Name="TextBoxAddress" Width="200" />
+                <Button Content="Add" Click="AddButton_Click"/>
                 <TextBlock Text="Обновление раз в" HorizontalAlignment="Right"/>
-                <ComboBox  HorizontalAlignment="Right">
-                    <ListBoxItem Content="5"/>
-                    <ListBoxItem Content="10"/>
+                <ComboBox x:Name="RefreshComboBox" HorizontalAlignment="Right" SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">
+                    <TextBlock Text="5000"/>
+                    <TextBlock Text="10000"/>
+                    <TextBlock Text="30000"/>
+                    <TextBlock Text="60000"/>
                 </ComboBox>
             </StackPanel>
             <DataGrid x:Name="ResultDataGrid" ItemsSource="{Binding Hosts}" AutoGenerateColumns="False" RowDetailsVisibilityMode="VisibleWhenSelected">

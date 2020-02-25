@@ -1,24 +1,15 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Threading;
-using System.Threading.Tasks;
 using HMLib;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using WebServer.Models;
 
 namespace WebServer
 {
-    public class Program
+  public class Program
     {
         static MailSendAdapter emailSendAdapter;
         public static void Main(string[] args)
@@ -52,11 +43,11 @@ namespace WebServer
             MessageParams.ReplyTo = settings.ReplyTo;
             MessageParams.SenderName = settings.SenderName;
             MessageParams.TextFormat = MimeKit.Text.TextFormat.Text;
-
+      /*
             emailSendAdapter = new MailSendAdapter(
                 SmtpServer: settings.SmtpServer,
-                SmtpPort: settings.SmtpPort,
-                Login: settings.Email, Password: settings.Password);
+                SmtpPort: settings.SmtpPort,                              РАСКОМЕНТИТЬ КОГДА ГУГЛ ОДУМАЕТСЯ
+                Login: settings.Email, Password: settings.Password);*/
 
             List<Models.Host> hosts = _context.Hosts.ToList();
             HostMonitor hostMonitor = new HostMonitor(settings, hosts);
@@ -122,14 +113,14 @@ namespace WebServer
         {
             foreach (var log in localLogs)//добавлять хосты в список и посылать одним письмом
             {
-                if (log.Generation == 10)
+                if (log.Generation == 100)
                 {
                     MessageParams message = new MessageParams
                     {
                         Body = $"Хост: {log.Host.Name} с ip: {log.IpAddress} изменил статус на {(log.Delay > 0 ? "Работает" : "Не отвечает")}",
                         Caption = $"{ log.Host.Name} статус { (log.Delay > 0 ? "Работает" : "Не отвечает")}"
                     };
-                    emailSendAdapter.Send(message);
+                    //emailSendAdapter.Send(message);       РАСКОМЕНТИТЬ КОГДА ГУГЛ ОДУМАЕТСЯ
                 }
             }
         }

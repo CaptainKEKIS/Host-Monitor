@@ -1,27 +1,12 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 
 namespace HMLib
 {
-    public class Host
-    {                                           //оставить Name, IP, Condition. Status убрать в результаты пинга
+  public partial class Host
+    {    
         public string Name { get; set; }
-        public string IP { get; set; }
+        public string IpAddress { get; set; }
         public bool Condition { get; set; }
-        public string Status { get; set; }
-        public bool StatusChanged { get; set; }
 
-        
-        public static void WriteHostsToFile(List<Host> Hosts, string PathToFile)
-        {
-            File.WriteAllText(PathToFile, JsonConvert.SerializeObject(Hosts));
-        }
-        public static List<Host> ReadHostsFromFile(string PathToFile)
-        {
-            List<Host> Hosts = JsonConvert.DeserializeObject<List<Host>>(File.ReadAllText(PathToFile));
-            return Hosts;
-        }
-        
     }
 }
